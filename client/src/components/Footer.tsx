@@ -9,10 +9,10 @@ export default function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <h3 className="font-bold text-xl mb-4">
-              ARTISAN <span className="text-primary">PIZZA</span>
+              COSMIC <span className="text-primary">PIZZA</span>
             </h3>
             <p className="text-sm text-muted-foreground">
-              Artisanal craft meets bold, playful energy. Breaking traditional pizzeria stereotypes since 2024.
+              Canada's best halal pizza & donair. Where quality meets customer service - 100% Halal.
             </p>
           </div>
 

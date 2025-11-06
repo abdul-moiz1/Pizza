@@ -30,7 +30,7 @@ export default function Header() {
           <Link href="/" data-testid="link-home">
             <div className="flex items-center space-x-2 cursor-pointer hover-elevate rounded-md px-3 py-2">
               <span className="text-xl font-bold">
-                ARTISAN <span className="text-primary">PIZZA</span>
+                COSMIC <span className="text-primary">PIZZA</span>
               </span>
             </div>
           </Link>

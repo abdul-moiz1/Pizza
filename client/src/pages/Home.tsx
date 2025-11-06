@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import PizzaCard from "@/components/PizzaCard";
+import { motion } from "framer-motion";
 import chickenPizza from '@assets/generated_images/Halal_Chicken_Special_Pizza_e83ceb00.png';
 import veggiePizza from '@assets/generated_images/Veggie_Lovers_Pizza_35627115.png';
 import bbqPizza from '@assets/generated_images/BBQ_Chicken_Pizza_bfbf1bea.png';
@@ -66,7 +67,13 @@ export default function Home() {
 
       <section className="py-20 bg-card/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-12"
+          >
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               FRESH FROM PIZZA <span className="text-primary">MENU</span>
             </h2>
@@ -74,11 +81,19 @@ export default function Home() {
               100% Halal - We have the best combination and our specialty pizzas are the most selling pizzas.
               Try once and you will fall in love.
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-            {featuredPizzas.map((pizza) => (
-              <PizzaCard key={pizza.id} {...pizza} />
+            {featuredPizzas.map((pizza, index) => (
+              <motion.div
+                key={pizza.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+              >
+                <PizzaCard {...pizza} />
+              </motion.div>
             ))}
           </div>
 
@@ -95,7 +110,12 @@ export default function Home() {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 Build Your Own <span className="text-primary">PIZZA</span>
               </h2>
@@ -112,12 +132,31 @@ export default function Home() {
                   Start Building
                 </Button>
               </Link>
-            </div>
-            <div className="relative">
+            </motion.div>
+            <motion.div 
+              className="relative"
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
               <div className="aspect-square rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                <span className="text-9xl">🍕</span>
+                <motion.span 
+                  className="text-9xl"
+                  animate={{ 
+                    rotate: [0, 10, -10, 0],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{ 
+                    duration: 3,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                >
+                  🍕
+                </motion.span>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -125,49 +164,57 @@ export default function Home() {
       <section className="py-20 bg-card/50">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="hover-elevate">
-              <CardHeader>
-                <CardTitle className="text-2xl">We Cater All Events</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">
-                  Weddings, corporate gatherings, special occasions. We've got you covered.
-                </p>
-                <Button variant="outline" data-testid="button-learn-catering">
-                  Learn More
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover-elevate">
-              <CardHeader>
-                <CardTitle className="text-2xl">Franchising</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">
-                  Be part of Cosmic. We cannot wait to see you joining our dynamic team.
-                </p>
-                <Button variant="outline" data-testid="button-franchise-info">
-                  Connect Now
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover-elevate">
-              <CardHeader>
-                <CardTitle className="text-2xl">Find Your Location</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">
-                  Find your favorite store close by and enjoy fresh, hot pizza.
-                </p>
-                <Link href="/contact">
-                  <Button variant="outline" data-testid="button-find-location">
-                    Find Location
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+            {[
+              {
+                title: "We Cater All Events",
+                description: "Weddings, corporate gatherings, special occasions. We've got you covered.",
+                buttonText: "Learn More",
+                testId: "button-learn-catering"
+              },
+              {
+                title: "Franchising",
+                description: "Be part of Cosmic. We cannot wait to see you joining our dynamic team.",
+                buttonText: "Connect Now",
+                testId: "button-franchise-info"
+              },
+              {
+                title: "Find Your Location",
+                description: "Find your favorite store close by and enjoy fresh, hot pizza.",
+                buttonText: "Find Location",
+                testId: "button-find-location",
+                link: "/contact"
+              }
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+              >
+                <Card className="hover-elevate h-full">
+                  <CardHeader>
+                    <CardTitle className="text-2xl">{item.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground mb-4">
+                      {item.description}
+                    </p>
+                    {item.link ? (
+                      <Link href={item.link}>
+                        <Button variant="outline" data-testid={item.testId}>
+                          {item.buttonText}
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Button variant="outline" data-testid={item.testId}>
+                        {item.buttonText}
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
