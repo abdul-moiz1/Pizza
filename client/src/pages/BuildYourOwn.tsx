@@ -1,7 +1,6 @@
 import PizzaBuilder from "@/components/PizzaBuilder";
 
 export default function BuildYourOwn() {
-  // TODO: Remove mock data - replace with API calls
   const sizes = [
     { id: 'small', name: 'Small', size: '10"', servings: '1-2 people', price: 10 },
     { id: 'medium', name: 'Medium', size: '12"', servings: '2-3 people', price: 14 },
