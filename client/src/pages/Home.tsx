@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import chickenPizza from '@assets/generated_images/Halal_Chicken_Special_Pizza_e83ceb00.png';
 import veggiePizza from '@assets/generated_images/Veggie_Lovers_Pizza_35627115.png';
 import bbqPizza from '@assets/generated_images/BBQ_Chicken_Pizza_bfbf1bea.png';
+import heroBackground from '@assets/generated_images/Pizza_hero_background_9183e00e.png';
 
 export default function Home() {
   // TODO: Remove mock data - replace with API calls
@@ -61,6 +62,7 @@ export default function Home() {
         subtitle="100% Halal - We have the best combination and our specialty pizzas are the most selling pizzas. Try once and you will fall in love."
         ctaText="See Menu"
         ctaLink="/menu"
+        backgroundImage={heroBackground}
       />
 
       <FeatureSection features={features} />

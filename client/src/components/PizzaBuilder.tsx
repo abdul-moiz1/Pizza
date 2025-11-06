@@ -52,6 +52,8 @@ export default function PizzaBuilder({ sizes, crusts, sauces, toppings, onComple
     }
   };
 
+  const [pizzaKey, setPizzaKey] = useState(0);
+
   const toggleTopping = (topping: PizzaTopping) => {
     setSelectedToppings(prev => {
       const exists = prev.find(t => t.id === topping.id);
@@ -60,6 +62,8 @@ export default function PizzaBuilder({ sizes, crusts, sauces, toppings, onComple
       }
       return [...prev, topping];
     });
+    // Trigger pizza animation
+    setPizzaKey(prev => prev + 1);
   };
 
   const canProceed = () => {
@@ -266,6 +270,7 @@ export default function PizzaBuilder({ sizes, crusts, sauces, toppings, onComple
         <CardContent className="space-y-4">
           <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
             <motion.div 
+              key={pizzaKey}
               className="w-48 h-48 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-8 border-primary/30 flex items-center justify-center relative"
               animate={{ 
                 scale: [1, 1.05, 1],
@@ -277,14 +282,62 @@ export default function PizzaBuilder({ sizes, crusts, sauces, toppings, onComple
                 repeatType: "reverse"
               }}
             >
-              <span className="text-4xl">🍕</span>
+              <motion.span 
+                className="text-4xl"
+                key={`pizza-${pizzaKey}`}
+                initial={{ scale: 0.5, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ 
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20
+                }}
+              >
+                🍕
+              </motion.span>
+              
+              {/* Topping particles animation */}
+              {selectedToppings.slice(0, 8).map((topping, index) => (
+                <motion.div
+                  key={`${topping.id}-${pizzaKey}`}
+                  className="absolute text-xl"
+                  initial={{ 
+                    scale: 0,
+                    x: 0,
+                    y: 0,
+                    opacity: 0
+                  }}
+                  animate={{ 
+                    scale: [0, 1.2, 1],
+                    x: Math.cos((index / selectedToppings.length) * Math.PI * 2) * 60,
+                    y: Math.sin((index / selectedToppings.length) * Math.PI * 2) * 60,
+                    opacity: [0, 1, 0.8]
+                  }}
+                  transition={{ 
+                    duration: 0.5,
+                    delay: index * 0.05
+                  }}
+                >
+                  {index % 4 === 0 ? '🍅' : index % 4 === 1 ? '🧀' : index % 4 === 2 ? '🫑' : '🍄'}
+                </motion.div>
+              ))}
+              
               {selectedToppings.length > 0 && (
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold"
+                  exit={{ scale: 0 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow-lg"
                 >
-                  {selectedToppings.length}
+                  <motion.span
+                    key={selectedToppings.length}
+                    initial={{ scale: 1.5 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 15 }}
+                  >
+                    {selectedToppings.length}
+                  </motion.span>
                 </motion.div>
               )}
             </motion.div>
