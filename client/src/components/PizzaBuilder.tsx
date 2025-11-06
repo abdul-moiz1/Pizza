@@ -54,6 +54,17 @@ export default function PizzaBuilder({ sizes, crusts, sauces, toppings, onComple
 
   const [pizzaKey, setPizzaKey] = useState(0);
 
+  const getPizzaSize = () => {
+    if (!selectedSize) return 192;
+    switch (selectedSize.id) {
+      case 'small': return 160;
+      case 'medium': return 192;
+      case 'large': return 224;
+      case 'xlarge': return 256;
+      default: return 192;
+    }
+  };
+
   const toggleTopping = (topping: PizzaTopping) => {
     setSelectedToppings(prev => {
       const exists = prev.find(t => t.id === topping.id);
@@ -270,65 +281,125 @@ export default function PizzaBuilder({ sizes, crusts, sauces, toppings, onComple
         <CardContent className="space-y-4">
           <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
             <motion.div 
-              key={pizzaKey}
-              className="w-48 h-48 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border-8 border-primary/30 flex items-center justify-center relative"
+              className="rounded-full bg-gradient-to-br from-amber-100 to-orange-200 dark:from-amber-900/40 dark:to-orange-800/40 flex items-center justify-center relative shadow-2xl"
+              style={{
+                boxShadow: 'inset 0 0 40px rgba(255, 200, 100, 0.3), 0 8px 30px rgba(0, 0, 0, 0.3)'
+              }}
               animate={{ 
-                scale: [1, 1.05, 1],
-                rotate: [0, 5, -5, 0]
+                width: getPizzaSize(),
+                height: getPizzaSize(),
               }}
               transition={{ 
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "reverse"
+                type: "spring",
+                stiffness: 200,
+                damping: 25
               }}
             >
-              <motion.span 
-                className="text-4xl"
-                key={`pizza-${pizzaKey}`}
-                initial={{ scale: 0.5, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ 
-                  type: "spring",
-                  stiffness: 260,
-                  damping: 20
+              {/* Crust edge */}
+              <motion.div
+                className="absolute inset-0 rounded-full border-amber-300/50 dark:border-amber-700/50"
+                style={{
+                  borderWidth: selectedSize ? (selectedSize.id === 'small' ? 6 : selectedSize.id === 'xlarge' ? 10 : 8) : 8,
+                  borderStyle: 'solid'
                 }}
-              >
-                🍕
-              </motion.span>
+              />
               
-              {/* Topping particles animation */}
-              {selectedToppings.slice(0, 8).map((topping, index) => (
+              {/* Sauce layer */}
+              {selectedSauce && (
                 <motion.div
-                  key={`${topping.id}-${pizzaKey}`}
-                  className="absolute text-xl"
-                  initial={{ 
-                    scale: 0,
-                    x: 0,
-                    y: 0,
-                    opacity: 0
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 0.85, opacity: 1 }}
+                  className={`absolute rounded-full ${
+                    selectedSauce.id === 'tomato' ? 'bg-red-500/60' :
+                    selectedSauce.id === 'bbq' ? 'bg-amber-700/60' :
+                    selectedSauce.id === 'white' ? 'bg-stone-100/80 dark:bg-stone-300/60' :
+                    'bg-green-600/60'
+                  }`}
+                  style={{
+                    width: '80%',
+                    height: '80%',
                   }}
-                  animate={{ 
-                    scale: [0, 1.2, 1],
-                    x: Math.cos((index / selectedToppings.length) * Math.PI * 2) * 60,
-                    y: Math.sin((index / selectedToppings.length) * Math.PI * 2) * 60,
-                    opacity: [0, 1, 0.8]
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                />
+              )}
+
+              {/* Cheese layer */}
+              {selectedSauce && (
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 0.75, opacity: 0.9 }}
+                  className="absolute rounded-full bg-yellow-200/80 dark:bg-yellow-500/60"
+                  style={{
+                    width: '70%',
+                    height: '70%',
                   }}
                   transition={{ 
-                    duration: 0.5,
-                    delay: index * 0.05
+                    type: "spring", 
+                    stiffness: 300, 
+                    damping: 20,
+                    delay: 0.1 
                   }}
-                >
-                  {index % 4 === 0 ? '🍅' : index % 4 === 1 ? '🧀' : index % 4 === 2 ? '🫑' : '🍄'}
-                </motion.div>
-              ))}
+                />
+              )}
               
+              {/* Topping particles animation */}
+              {selectedToppings.map((topping, index) => {
+                const angle = (index / Math.max(selectedToppings.length, 1)) * Math.PI * 2;
+                const radius = getPizzaSize() * 0.25;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                
+                const toppingEmoji = topping.category === 'meat' ? 
+                  (topping.id.includes('pepperoni') ? '🍖' : 
+                   topping.id.includes('chicken') ? '🍗' : 
+                   topping.id.includes('bacon') ? '🥓' : '🍖') :
+                  topping.category === 'cheese' ? '🧀' :
+                  (topping.id.includes('mushroom') ? '🍄' :
+                   topping.id.includes('pepper') ? '🫑' :
+                   topping.id.includes('olive') ? '🫒' :
+                   topping.id.includes('tomato') ? '🍅' :
+                   topping.id.includes('onion') ? '🧅' :
+                   topping.id.includes('jalapeno') ? '🌶️' :
+                   topping.id.includes('pineapple') ? '🍍' : '🥬');
+
+                return (
+                  <motion.div
+                    key={`${topping.id}-${index}`}
+                    className="absolute text-2xl"
+                    initial={{ 
+                      scale: 0,
+                      x: 0,
+                      y: -100,
+                      opacity: 0,
+                      rotate: -180
+                    }}
+                    animate={{ 
+                      scale: 1,
+                      x: x,
+                      y: y,
+                      opacity: 1,
+                      rotate: 0
+                    }}
+                    transition={{ 
+                      type: "spring",
+                      stiffness: 200,
+                      damping: 15,
+                      delay: index * 0.1
+                    }}
+                  >
+                    {toppingEmoji}
+                  </motion.div>
+                );
+              })}
+              
+              {/* Topping counter badge */}
               {selectedToppings.length > 0 && (
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow-lg"
+                  className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center text-sm font-bold shadow-lg border-2 border-background"
                 >
                   <motion.span
                     key={selectedToppings.length}
