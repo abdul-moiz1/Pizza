@@ -12,84 +12,114 @@ import houseSpecial from '@assets/generated_images/House_Special_Pizza_e0ab3d75.
 
 export default function Menu() {
   // TODO: Remove mock data - replace with API calls
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'specialty' | 'sides' | 'drinks' | 'desserts'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'specialty' | 'donairs' | 'sides' | 'salads' | 'drinks' | 'desserts'>('all');
 
   const specialtyPizzas = [
     {
-      id: 'all-meat',
-      name: 'All Halal Meat Lovers',
-      description: 'Perfect blend of pepperoni, ham, bacon, Italian sausages, mozzarella cheese & halal meat.',
+      id: 'house-special',
+      name: 'House Special',
+      description: 'Pepperoni, Ham, Onions, Mushrooms, Green Peppers, Italian Sausages, Black Olives & Mozzarella Cheese',
+      price: 18,
+      image: houseSpecial
+    },
+    {
+      id: 'meat-lovers',
+      name: 'Meat Lovers',
+      description: 'Pepperoni, Ham, Bacon, Italian Sausages & Mozzarella Cheese',
       price: 19,
       image: meatPizza
     },
     {
-      id: 'house-special',
-      name: 'House Special',
-      description: 'Pepperoni, mushrooms, bell peppers, onions, olives, and Italian sausage with our signature sauce.',
-      price: 18,
-      image: houseSpecial
-    },
-    {
-      id: 'halal-chicken',
-      name: 'Halal Chicken Special',
-      description: 'Grilled halal chicken, mushrooms, onions, and green peppers with our signature sauce.',
-      price: 17,
-      image: chickenPizza
-    },
-    {
-      id: 'donair-special',
-      name: 'Donair Pizza',
-      description: 'People love our donair pizza, made with house special sweet sauce and seasoned donair meat.',
-      price: 18,
-      image: donairPizza
-    },
-    {
-      id: 'bbq-chicken',
-      name: 'BBQ Chicken',
-      description: 'Halal chicken with BBQ sauce, red onions, and mozzarella. Sweet and savory perfection.',
-      price: 17,
-      image: bbqPizza
-    },
-    {
       id: 'hawaiian',
       name: 'Hawaiian',
-      description: 'Lots of ham and pineapple topped with mozzarella cheese.',
+      description: 'Ham and Pineapple topped with Mozzarella Cheese',
       price: 16,
       image: houseSpecial
     },
     {
-      id: 'canadian',
-      name: 'Canadian',
-      description: 'Pepperoni, bacon, mushrooms & mozzarella cheese.',
+      id: 'canadian-classic',
+      name: 'Canadian Classic',
+      description: 'Pepperoni, Bacon, Mushrooms & Mozzarella Cheese',
       price: 17,
       image: chickenPizza
     },
     {
-      id: 'mexican',
-      name: 'Mexican',
-      description: 'Ground beef, onions, green peppers, black olives, banana peppers & mozzarella cheese.',
+      id: 'cosmic-special',
+      name: 'Cosmic Special',
+      description: 'Ground Beef, Onions, Green Peppers, Black Olives, Banana Peppers & Mozzarella Cheese',
       price: 17,
       image: meatPizza
     },
     {
       id: 'three-cheese',
       name: 'Three Cheese',
-      description: 'Parmesan, cheddar cheese & mozzarella cheese.',
+      description: 'Parmesan, Cheddar Cheese & Mozzarella Cheese',
       price: 15,
       image: veggiePizza
     },
     {
-      id: 'veggie',
-      name: 'A Veggie',
-      description: 'Onions, mushrooms, green peppers, cooked tomatoes & mozzarella cheese.',
+      id: 'veggie-lovers',
+      name: 'Veggie Lovers',
+      description: 'Onions, Mushrooms, Green Peppers, Cooked Tomatoes & Mozzarella Cheese',
       price: 15,
       image: veggiePizza
+    },
+    {
+      id: 'paneer-tikka',
+      name: 'Paneer Tikka Pizza',
+      description: 'Onions, Green Peppers, Cooked Tomatoes, Fresh Ginger, Minced Garlic, Green Chilies, Cilantro & Mozzarella Cheese (Spicy)',
+      price: 17,
+      image: veggiePizza
+    },
+    {
+      id: 'greek-feast',
+      name: 'Greek Feast',
+      description: 'Pizza Sauce, Roasted Red Pepper, Spinach, Onion, Mushroom, Tomatoes, Black Olives, Feta Cheese & Garlic Herb Seasoning',
+      price: 17,
+      image: veggiePizza
+    },
+    {
+      id: 'chicken-special',
+      name: 'Chicken Special',
+      description: 'Grilled halal chicken, mushrooms, onions, and green peppers with our signature sauce',
+      price: 17,
+      image: chickenPizza
+    },
+    {
+      id: 'bbq-chicken',
+      name: 'BBQ Chicken',
+      description: 'Halal chicken with BBQ sauce, red onions, and mozzarella',
+      price: 17,
+      image: bbqPizza
+    },
+    {
+      id: 'donair-pizza',
+      name: 'Donair Pizza',
+      description: 'Donair meat, lettuce, tomatoes, red onions, sweet sauce & mozzarella cheese',
+      price: 18,
+      image: donairPizza
     }
+  ];
+
+  const donairs = [
+    { id: 'chicken-donair', name: 'Chicken Donair', description: 'Halal chicken donair with lettuce, tomatoes, red onions, sweet sauce & garlic sauce', price: 10 },
+    { id: 'beef-donair', name: 'Beef Donair', description: 'Seasoned beef donair with lettuce, tomatoes, red onions, sweet sauce & garlic sauce', price: 11 },
+    { id: 'mix-donair', name: 'Mix Donair', description: 'Chicken & beef combo with lettuce, tomatoes, red onions, sweet sauce & garlic sauce', price: 11 },
+    { id: 'chicken-plate', name: 'Chicken Donair Plate', description: 'Served with seasoned rice, hummus, tzatziki, fresh salad & pita bread', price: 14 },
+    { id: 'beef-plate', name: 'Beef Donair Plate', description: 'Served with seasoned rice, hummus, tzatziki, fresh salad & pita bread', price: 15 },
+    { id: 'mix-plate', name: 'Mix Donair Plate', description: 'Chicken & beef combo served with seasoned rice, hummus, tzatziki, fresh salad & pita bread', price: 15 }
+  ];
+
+  const salads = [
+    { id: 'greek-salad', name: 'Greek Salad', description: 'Fresh lettuce, tomatoes, cucumbers, red onions, feta cheese, black olives with Greek dressing', price: 8 },
+    { id: 'caesar-salad', name: 'Caesar Salad', description: 'Romaine lettuce, parmesan cheese, croutons, Caesar dressing', price: 8 },
+    { id: 'garden-salad', name: 'Garden Salad', description: 'Fresh mixed greens, tomatoes, cucumbers, carrots with your choice of dressing', price: 7 }
   ];
 
   const sides = [
     { id: 'wings', name: 'Halal Chicken Wings', description: 'Hot, Mild, Salt & Pepper, Honey Garlic, Teriyaki, BBQ, Lemon Pepper & Honey Hot (10 pieces)', price: 12 },
     { id: 'boneless-wings', name: 'Boneless Wings', description: 'Tender boneless chicken bites in your choice of sauce (12 pieces)', price: 13 },
+    { id: 'samosas', name: 'Samosas', description: 'Fried pastry filled with spiced potatoes and peas (4 pieces)', price: 6 },
     { id: 'cheesy-bread', name: 'Cheesy Bread', description: '8 Pieces – Loaded with mozzarella, served with marinara sauce', price: 8 },
     { id: 'garlic-sticks', name: 'Garlic Bread Sticks', description: '8 Pieces – Brushed with garlic butter, served with marinara sauce', price: 7 },
     { id: 'poutine', name: 'Poutine', description: 'Regular, Donair, Deluxe & Mix Poutine with cheese curds and gravy', price: 10 },
@@ -167,11 +197,25 @@ export default function Menu() {
               Specialty Pizzas
             </Button>
             <Button
+              variant={selectedCategory === 'donairs' ? 'default' : 'outline'}
+              onClick={() => setSelectedCategory('donairs')}
+              data-testid="button-category-donairs"
+            >
+              Donairs
+            </Button>
+            <Button
               variant={selectedCategory === 'sides' ? 'default' : 'outline'}
               onClick={() => setSelectedCategory('sides')}
               data-testid="button-category-sides"
             >
               Sides & Appetizers
+            </Button>
+            <Button
+              variant={selectedCategory === 'salads' ? 'default' : 'outline'}
+              onClick={() => setSelectedCategory('salads')}
+              data-testid="button-category-salads"
+            >
+              Salads
             </Button>
             <Button
               variant={selectedCategory === 'drinks' ? 'default' : 'outline'}
@@ -266,6 +310,72 @@ export default function Menu() {
                         <span className="text-xl font-bold text-primary">${drink.price.toFixed(2)}</span>
                         <Button size="sm" onClick={() => console.log('Added:', drink.id)}>
                           Add
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {selectedCategory === 'donairs' && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {donairs.map((donair, index) => (
+                <motion.div
+                  key={donair.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                >
+                  <Card className="hover-elevate h-full">
+                    <CardHeader>
+                      <CardTitle>{donair.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-sm text-muted-foreground">{donair.description}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold text-primary">${donair.price}</span>
+                        <Button onClick={() => console.log('Added:', donair.id)} data-testid={`button-add-${donair.id}`}>
+                          Add to Order
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {selectedCategory === 'salads' && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {salads.map((salad, index) => (
+                <motion.div
+                  key={salad.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                >
+                  <Card className="hover-elevate h-full">
+                    <CardHeader>
+                      <CardTitle>{salad.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-sm text-muted-foreground">{salad.description}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold text-primary">${salad.price}</span>
+                        <Button onClick={() => console.log('Added:', salad.id)} data-testid={`button-add-${salad.id}`}>
+                          Add to Order
                         </Button>
                       </div>
                     </CardContent>
