@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useMemo } from "react";
 
 interface PizzaPreviewProps {
   size: string;
@@ -7,6 +8,11 @@ interface PizzaPreviewProps {
   cheese: string;
   toppings: string[];
 }
+
+const seededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
 
 const ToppingDot = ({ type, style }: { type: string; style: React.CSSProperties }) => {
   const getToppingStyle = () => {
@@ -93,7 +99,7 @@ const ToppingDot = ({ type, style }: { type: string; style: React.CSSProperties 
   );
 };
 
-export default function PizzaPreview({ size, sauce, cheese, toppings }: PizzaPreviewProps) {
+export default function PizzaPreview({ size, crust, sauce, cheese, toppings }: PizzaPreviewProps) {
   const getPizzaSize = () => {
     switch (size) {
       case 'small': return 180;
@@ -104,24 +110,85 @@ export default function PizzaPreview({ size, sauce, cheese, toppings }: PizzaPre
     }
   };
 
+  const getCrustThickness = () => {
+    switch (crust) {
+      case 'thin': return 0.88;
+      case 'thick': return 0.78;
+      case 'stuffed': return 0.75;
+      default: return 0.82;
+    }
+  };
+
+  const getCrustStyle = () => {
+    const baseStyle = {
+      background: 'radial-gradient(circle at 35% 35%, #D4A574, #C19A6B 40%, #B8860B 70%, #8B6914)',
+      boxShadow: 'inset 0 -8px 30px rgba(0, 0, 0, 0.3), inset 0 8px 20px rgba(255, 255, 255, 0.1), 0 15px 40px rgba(0, 0, 0, 0.4)',
+    };
+
+    if (crust === 'stuffed') {
+      return {
+        ...baseStyle,
+        background: 'radial-gradient(circle at 35% 35%, #E8C29A, #D4A574 35%, #C19A6B 50%, #B8860B 75%, #8B6914)',
+        boxShadow: 'inset 0 -8px 30px rgba(0, 0, 0, 0.3), inset 0 8px 20px rgba(255, 255, 255, 0.1), 0 0 0 4px rgba(255, 220, 150, 0.4), 0 15px 40px rgba(0, 0, 0, 0.4)',
+      };
+    }
+
+    if (crust === 'thin') {
+      return {
+        ...baseStyle,
+        background: 'radial-gradient(circle at 35% 35%, #C8A882, #B8996B 45%, #A88654 75%, #8B6914)',
+      };
+    }
+
+    if (crust === 'thick') {
+      return {
+        ...baseStyle,
+        background: 'radial-gradient(circle at 35% 35%, #E0C8A0, #D4A574 30%, #C19A6B 55%, #B8860B 80%, #8B6914)',
+      };
+    }
+
+    return baseStyle;
+  };
+
   const pizzaSize = getPizzaSize();
+  const crustThickness = getCrustThickness();
+
+  const toppingPositions = useMemo(() => {
+    return toppings.map((toppingId, index) => {
+      const seed = toppingId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) + index;
+      const angle = seededRandom(seed * 3) * Math.PI * 2;
+      const radiusRatio = 0.15 + seededRandom(seed * 7) * 0.35;
+      const radius = pizzaSize * radiusRatio;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      const sizeVar = 20 + seededRandom(seed * 5) * 16;
+      const rotation = seededRandom(seed * 11) * 360;
+      
+      return { x, y, sizeVar, rotation };
+    });
+  }, [toppings, pizzaSize]);
 
   return (
     <div className="bg-gradient-to-br from-card to-muted rounded-lg flex flex-col items-center justify-center p-6 min-h-[400px]">
       <motion.div 
+        key={size}
         className="rounded-full relative shadow-2xl"
-        style={{
-          background: 'radial-gradient(circle at 35% 35%, #D4A574, #C19A6B 40%, #B8860B 70%, #8B6914)',
-          boxShadow: 'inset 0 -8px 30px rgba(0, 0, 0, 0.3), inset 0 8px 20px rgba(255, 255, 255, 0.1), 0 15px 40px rgba(0, 0, 0, 0.4)',
+        style={getCrustStyle()}
+        initial={{ 
+          width: pizzaSize * 0.8,
+          height: pizzaSize * 0.8,
+          scale: 0.8
         }}
         animate={{ 
           width: pizzaSize,
           height: pizzaSize,
+          scale: 1
         }}
         transition={{ 
           type: "spring",
-          stiffness: 200,
-          damping: 25
+          stiffness: 300,
+          damping: 25,
+          duration: 0.6
         }}
       >
         {/* Crust texture */}
@@ -132,43 +199,84 @@ export default function PizzaPreview({ size, sauce, cheese, toppings }: PizzaPre
           }}
         />
         
-        {/* Inner pizza base */}
+        {/* Inner pizza base (different size based on crust) */}
         <motion.div
           initial={{ scale: 0 }}
-          animate={{ scale: 0.82 }}
+          animate={{ scale: 1 }}
           className="absolute inset-0 rounded-full m-auto"
           style={{
-            width: '82%',
-            height: '82%',
+            width: `${crustThickness * 100}%`,
+            height: `${crustThickness * 100}%`,
             background: 'radial-gradient(circle at 40% 40%, #E8C29A, #D4A574)',
             boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 0.2)',
           }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 250, 
+            damping: 22,
+            delay: 0.1
+          }}
         />
         
-        {/* Sauce layer */}
+        {/* Sauce layer with pouring animation */}
         {sauce && sauce !== 'none' && (
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 0.75, opacity: 1 }}
-            className="absolute inset-0 rounded-full m-auto"
-            style={{
-              width: '75%',
-              height: '75%',
-              background: sauce === 'marinara' 
-                ? 'radial-gradient(circle at 40% 40%, #DC3545, #C92A2A 60%, #A61E1E)'
-                : sauce === 'bbq' 
-                ? 'radial-gradient(circle at 40% 40%, #8B4513, #654321 60%, #4A3621)'
-                : sauce === 'white' 
-                ? 'radial-gradient(circle at 40% 40%, #F5F5DC, #E8E8D0 60%, #D3D3C0)'
-                : 'radial-gradient(circle at 40% 40%, #4A7C59, #2F5233 60%, #1F3322)',
-              boxShadow: 'inset 0 2px 12px rgba(0, 0, 0, 0.3)',
-            }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          />
+          <>
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 0.75, opacity: 1 }}
+              className="absolute inset-0 rounded-full m-auto overflow-hidden"
+              style={{
+                width: '75%',
+                height: '75%',
+              }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 200, 
+                damping: 18,
+                delay: 0.2
+              }}
+            >
+              <motion.div
+                initial={{ clipPath: 'circle(0% at 50% 50%)' }}
+                animate={{ clipPath: 'circle(100% at 50% 50%)' }}
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: sauce === 'marinara' 
+                    ? 'radial-gradient(circle at 40% 40%, #DC3545, #C92A2A 60%, #A61E1E)'
+                    : sauce === 'bbq' 
+                    ? 'radial-gradient(circle at 40% 40%, #8B4513, #654321 60%, #4A3621)'
+                    : sauce === 'white' 
+                    ? 'radial-gradient(circle at 40% 40%, #F5F5DC, #E8E8D0 60%, #D3D3C0)'
+                    : 'radial-gradient(circle at 40% 40%, #4A7C59, #2F5233 60%, #1F3322)',
+                  boxShadow: 'inset 0 2px 12px rgba(0, 0, 0, 0.3)',
+                }}
+                transition={{ 
+                  duration: 0.8, 
+                  ease: [0.4, 0, 0.2, 1],
+                  delay: 0.3
+                }}
+              />
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.2 }}
+                className="absolute inset-0"
+                style={{
+                  background: `
+                    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.3) 0%, transparent 15%),
+                    radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.2) 0%, transparent 10%),
+                    radial-gradient(circle at 45% 80%, rgba(255, 255, 255, 0.25) 0%, transparent 12%)
+                  `,
+                }}
+                transition={{ 
+                  delay: 0.8,
+                  duration: 0.5
+                }}
+              />
+            </motion.div>
+          </>
         )}
 
-        {/* Cheese layer */}
+        {/* Cheese layer with melting animation */}
         {cheese && cheese !== 'none' && (
           <>
             <motion.div
@@ -186,49 +294,64 @@ export default function PizzaPreview({ size, sauce, cheese, toppings }: PizzaPre
               }}
               transition={{ 
                 type: "spring", 
-                stiffness: 300, 
-                damping: 20,
-                delay: 0.15 
+                stiffness: 250, 
+                damping: 18,
+                delay: 0.9
               }}
             />
-            {/* Cheese texture bubbles */}
+            {/* Cheese melting texture bubbles with animation */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.4 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ 
+                opacity: [0, 0.5, 0.4],
+                scale: [0.8, 1.05, 1]
+              }}
               className="absolute inset-0 rounded-full m-auto"
               style={{
                 width: cheese === 'light' ? '60%' : cheese === 'extra' ? '72%' : '68%',
                 height: cheese === 'light' ? '60%' : cheese === 'extra' ? '72%' : '68%',
                 background: `
-                  radial-gradient(circle at 25% 30%, rgba(255, 255, 220, 0.8) 0%, transparent 4%),
-                  radial-gradient(circle at 65% 45%, rgba(255, 255, 220, 0.6) 0%, transparent 3%),
-                  radial-gradient(circle at 40% 60%, rgba(255, 255, 220, 0.7) 0%, transparent 3.5%),
-                  radial-gradient(circle at 75% 25%, rgba(255, 255, 220, 0.5) 0%, transparent 2.5%),
-                  radial-gradient(circle at 20% 70%, rgba(255, 255, 220, 0.6) 0%, transparent 3%),
-                  radial-gradient(circle at 85% 65%, rgba(255, 255, 220, 0.7) 0%, transparent 4%)
+                  radial-gradient(circle at 25% 30%, rgba(255, 255, 220, 0.9) 0%, transparent 5%),
+                  radial-gradient(circle at 65% 45%, rgba(255, 255, 220, 0.7) 0%, transparent 4%),
+                  radial-gradient(circle at 40% 60%, rgba(255, 255, 220, 0.8) 0%, transparent 4.5%),
+                  radial-gradient(circle at 75% 25%, rgba(255, 255, 220, 0.6) 0%, transparent 3.5%),
+                  radial-gradient(circle at 20% 70%, rgba(255, 255, 220, 0.7) 0%, transparent 4%),
+                  radial-gradient(circle at 85% 65%, rgba(255, 255, 220, 0.8) 0%, transparent 5%),
+                  radial-gradient(circle at 50% 40%, rgba(255, 255, 220, 0.5) 0%, transparent 3%)
                 `,
               }}
               transition={{ 
-                delay: 0.4,
-                duration: 0.6
+                delay: 1.1,
+                duration: 0.8,
+                times: [0, 0.6, 1]
               }}
             />
+            {/* Extra cheese layer with stretch effect */}
+            {cheese === 'extra' && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 0.3, scale: 1 }}
+                className="absolute inset-0 rounded-full m-auto"
+                style={{
+                  width: '68%',
+                  height: '68%',
+                  background: 'radial-gradient(circle at 50% 50%, rgba(255, 248, 220, 0.6) 0%, transparent 60%)',
+                  filter: 'blur(2px)',
+                }}
+                transition={{ 
+                  delay: 1.3,
+                  duration: 0.6
+                }}
+              />
+            )}
           </>
         )}
         
-        {/* Realistic topping dots */}
-        {cheese && cheese !== 'none' && toppings.map((toppingId, index) => {
-          const totalToppings = toppings.length;
-          const rings = Math.ceil(Math.sqrt(totalToppings));
-          const currentRing = Math.floor(index / (totalToppings / rings));
-          const itemsInRing = Math.ceil(totalToppings / rings);
-          const angleStep = (Math.PI * 2) / itemsInRing;
-          const angle = angleStep * (index % itemsInRing) + (currentRing * 0.5);
-          const radius = (pizzaSize * (0.15 + currentRing * 0.08));
-          const x = Math.cos(angle) * radius;
-          const y = Math.sin(angle) * radius;
-          const toppingHash = toppingId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-          const sizeVar = 24 + ((toppingHash % 12) + index % 6);
+        {/* Realistic topping dots with natural spread */}
+        {toppings.map((toppingId, index) => {
+          const position = toppingPositions[index];
+          const hasCheeseLayer = cheese && cheese !== 'none';
+          const toppingDelay = hasCheeseLayer ? 1.4 : 0.9;
 
           return (
             <motion.div
@@ -236,29 +359,34 @@ export default function PizzaPreview({ size, sauce, cheese, toppings }: PizzaPre
               initial={{ 
                 scale: 0,
                 x: 0,
-                y: -150,
+                y: -100,
                 opacity: 0,
-                rotate: 0,
+                rotate: -45,
               }}
               animate={{ 
                 scale: 1,
-                x: x,
-                y: y,
+                x: position.x,
+                y: position.y,
                 opacity: 1,
-                rotate: 360,
+                rotate: position.rotation,
               }}
               transition={{ 
                 type: "spring",
-                stiffness: 150,
-                damping: 12,
-                delay: 0.4 + index * 0.08
+                stiffness: 180,
+                damping: 14,
+                delay: toppingDelay + index * 0.06,
+                rotate: {
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 10,
+                }
               }}
             >
               <ToppingDot 
                 type={toppingId}
                 style={{
-                  width: `${sizeVar}px`,
-                  height: `${sizeVar}px`,
+                  width: `${position.sizeVar}px`,
+                  height: `${position.sizeVar}px`,
                 }}
               />
             </motion.div>
