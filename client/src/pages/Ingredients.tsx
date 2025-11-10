@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Beef, Carrot, Wheat, Milk } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Ingredients() {
   const ingredientCategories = [
@@ -58,13 +59,23 @@ export default function Ingredients() {
     <div className="min-h-screen">
       <section className="py-20 bg-card/30">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
+          <motion.h1 
+            className="text-5xl md:text-7xl font-bold mb-6"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             OUR <span className="text-primary">INGREDIENTS</span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          </motion.h1>
+          <motion.p 
+            className="text-xl text-muted-foreground max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             We have earned great recipes to achieve these great combinations.
             Only the finest, freshest ingredients make it onto our pizzas.
-          </p>
+          </motion.p>
         </div>
       </section>
 
@@ -74,30 +85,51 @@ export default function Ingredients() {
             {ingredientCategories.map((category, index) => {
               const Icon = category.icon;
               return (
-                <Card key={index} className="hover-elevate" data-testid={`card-category-${index}`}>
-                  <CardHeader>
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                        <Icon className="w-6 h-6 text-primary" />
-                      </div>
-                      <CardTitle className="text-2xl">{category.title}</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {category.items.map((item, itemIndex) => (
-                        <Badge 
-                          key={itemIndex} 
-                          variant="secondary"
-                          className="text-sm"
-                          data-testid={`badge-ingredient-${index}-${itemIndex}`}
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card className="hover-elevate h-full" data-testid={`card-category-${index}`}>
+                    <CardHeader>
+                      <div className="flex items-center gap-4">
+                        <motion.div 
+                          className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0"
+                          initial={{ scale: 0, rotate: -180 }}
+                          whileInView={{ scale: 1, rotate: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5, delay: index * 0.1 + 0.2, type: "spring", stiffness: 200 }}
                         >
-                          {item}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                          <Icon className="w-6 h-6 text-primary" />
+                        </motion.div>
+                        <CardTitle className="text-2xl">{category.title}</CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-2">
+                        {category.items.map((item, itemIndex) => (
+                          <motion.div
+                            key={itemIndex}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.3, delay: index * 0.1 + itemIndex * 0.05 }}
+                          >
+                            <Badge 
+                              variant="secondary"
+                              className="text-sm"
+                              data-testid={`badge-ingredient-${index}-${itemIndex}`}
+                            >
+                              {item}
+                            </Badge>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               );
             })}
           </div>

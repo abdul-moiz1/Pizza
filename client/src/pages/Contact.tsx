@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapPin, Phone, Clock } from "lucide-react";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function Contact() {
   // TODO: Remove mock data - replace with API calls
@@ -46,12 +47,22 @@ export default function Contact() {
     <div className="min-h-screen">
       <section className="py-20 bg-card/30">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
+          <motion.h1 
+            className="text-5xl md:text-7xl font-bold mb-6"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             FIND YOUR <span className="text-primary">LOCATION</span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          </motion.h1>
+          <motion.p 
+            className="text-xl text-muted-foreground max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             Find your favorite Cosmic Pizza store close by
-          </p>
+          </motion.p>
         </div>
       </section>
 
@@ -74,8 +85,15 @@ export default function Contact() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredLocations.map((location) => (
-              <Card key={location.id} className="hover-elevate" data-testid={`card-location-${location.id}`}>
+            {filteredLocations.map((location, index) => (
+              <motion.div
+                key={location.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+              <Card className="hover-elevate h-full" data-testid={`card-location-${location.id}`}>
                 <CardHeader>
                   <CardTitle>{location.name}</CardTitle>
                 </CardHeader>
@@ -100,6 +118,7 @@ export default function Contact() {
                   </Button>
                 </CardContent>
               </Card>
+              </motion.div>
             ))}
           </div>
 
