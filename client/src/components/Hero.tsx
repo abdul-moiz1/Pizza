@@ -41,7 +41,7 @@ export default function Hero({
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-5xl md:text-7xl font-bold text-foreground mb-6"
+          className="text-5xl md:text-7xl font-bold text-white mb-6"
         >
           {title.split(' ').map((word, index) => {
             const isOrange = word.toLowerCase().includes('menu') || 
@@ -68,7 +68,7 @@ export default function Hero({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto"
+          className="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto"
         >
           {subtitle}
         </motion.p>
