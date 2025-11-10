@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface HeroProps {
   title: string;
   subtitle: string;
   ctaText?: string;
   ctaLink?: string;
-  backgroundImage?: string;
+  backgroundImages?: string[];
   height?: string;
 }
 
@@ -16,24 +18,93 @@ export default function Hero({
   subtitle,
   ctaText = "Order Now",
   ctaLink = "/menu",
-  backgroundImage,
+  backgroundImages = [],
   height = "85vh"
 }: HeroProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const images = backgroundImages.length > 0 ? backgroundImages : [undefined];
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+  };
+
   return (
     <section 
       className="relative w-full flex items-center justify-center overflow-hidden"
       style={{ height }}
     >
-      {backgroundImage && (
-        <motion.div 
-          initial={{ scale: 1.1, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${backgroundImage})` }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
-        </motion.div>
+      <AnimatePresence mode="wait">
+        {images[currentIndex] && (
+          <motion.div 
+            key={currentIndex}
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${images[currentIndex]})` }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {images.length > 1 && (
+        <>
+          <Button
+            size="icon"
+            variant="outline"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-background/10 backdrop-blur-sm border-white/20 text-white hover:bg-background/20"
+            onClick={goToPrevious}
+            data-testid="button-hero-prev"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </Button>
+
+          <Button
+            size="icon"
+            variant="outline"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-background/10 backdrop-blur-sm border-white/20 text-white hover:bg-background/20"
+            onClick={goToNext}
+            data-testid="button-hero-next"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </Button>
+
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`w-3 h-3 rounded-md transition-all duration-300 ${
+                  index === currentIndex
+                    ? 'bg-primary w-8'
+                    : 'bg-white/50 hover:bg-white/70'
+                }`}
+                data-testid={`button-hero-slide-${index}`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </>
       )}
       
       <div className="relative z-10 container mx-auto px-4 text-center">
