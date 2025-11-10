@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import FeatureSection from "@/components/FeatureSection";
+import PizzaTimeline from "@/components/PizzaTimeline";
 import { Award, Leaf, Pizza } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,6 +67,8 @@ export default function Home() {
       />
 
       <FeatureSection features={features} />
+
+      <PizzaTimeline />
 
       <section className="py-20 bg-card/50">
         <div className="container mx-auto px-4">

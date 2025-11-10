@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 interface PizzaCardProps {
   id: string;
@@ -31,10 +32,12 @@ export default function PizzaCard({
   return (
     <Card className="overflow-hidden hover-elevate transition-all duration-300" data-testid={`card-pizza-${id}`}>
       <div className="aspect-square overflow-hidden">
-        <img 
+        <motion.img 
           src={image} 
           alt={name}
           className="w-full h-full object-cover"
+          whileHover={{ scale: 1.1 }}
+          transition={{ duration: 0.4 }}
         />
       </div>
       <CardHeader className="gap-2">
