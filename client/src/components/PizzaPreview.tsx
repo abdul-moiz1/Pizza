@@ -157,7 +157,8 @@ export default function PizzaPreview({ size, crust, sauce, cheese, toppings }: P
     return toppings.map((toppingId, index) => {
       const seed = toppingId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) + index;
       const angle = seededRandom(seed * 3) * Math.PI * 2;
-      const radiusRatio = 0.15 + seededRandom(seed * 7) * 0.35;
+      // Keep toppings within 55% of pizza radius (within cheese/sauce area)
+      const radiusRatio = 0.05 + seededRandom(seed * 7) * 0.25;
       const radius = pizzaSize * radiusRatio;
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
