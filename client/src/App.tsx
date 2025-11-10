@@ -30,6 +30,7 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/menu" component={Menu} />
           <Route path="/build" component={BuildYourOwn} />
+          <Route path="/build-your-own" component={BuildYourOwn} />
           <Route path="/about" component={About} />
           <Route path="/ingredients" component={Ingredients} />
           <Route path="/contact" component={Contact} />
