@@ -11,6 +11,7 @@ import chickenPizza from '@assets/generated_images/Halal_Chicken_Special_Pizza_e
 import veggiePizza from '@assets/generated_images/Veggie_Lovers_Pizza_35627115.png';
 import bbqPizza from '@assets/generated_images/BBQ_Chicken_Pizza_bfbf1bea.png';
 import heroBackground from '@assets/generated_images/Pizza_hero_background_9183e00e.png';
+import buildPizzaImage from '@assets/generated_images/Premium_pizza_assembly_scene_5d570890.png';
 
 export default function Home() {
   // TODO: Remove mock data - replace with API calls
@@ -145,21 +146,15 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <div className="aspect-square rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                <motion.span 
-                  className="text-9xl"
-                  animate={{ 
-                    rotate: [0, 10, -10, 0],
-                    scale: [1, 1.1, 1]
-                  }}
-                  transition={{ 
-                    duration: 3,
-                    repeat: Infinity,
-                    repeatType: "reverse"
-                  }}
-                >
-                  🍕
-                </motion.span>
+              <div className="relative aspect-square rounded-lg overflow-hidden shadow-2xl">
+                <motion.img
+                  src={buildPizzaImage}
+                  alt="Artisan pizza being crafted"
+                  className="w-full h-full object-cover"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
               </div>
             </motion.div>
           </div>
