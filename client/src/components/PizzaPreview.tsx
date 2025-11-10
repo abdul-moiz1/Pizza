@@ -107,7 +107,7 @@ export default function PizzaPreview({ size, sauce, cheese, toppings }: PizzaPre
   const pizzaSize = getPizzaSize();
 
   return (
-    <div className="aspect-square bg-gradient-to-br from-card to-muted rounded-lg flex items-center justify-center p-6">
+    <div className="bg-gradient-to-br from-card to-muted rounded-lg flex flex-col items-center justify-center p-6 min-h-[400px]">
       <motion.div 
         className="rounded-full relative shadow-2xl"
         style={{
@@ -228,7 +228,7 @@ export default function PizzaPreview({ size, sauce, cheese, toppings }: PizzaPre
           const x = Math.cos(angle) * radius;
           const y = Math.sin(angle) * radius;
           const toppingHash = toppingId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-          const sizeVar = 12 + ((toppingHash % 8) + index % 4);
+          const sizeVar = 24 + ((toppingHash % 12) + index % 6);
 
           return (
             <motion.div
@@ -236,20 +236,22 @@ export default function PizzaPreview({ size, sauce, cheese, toppings }: PizzaPre
               initial={{ 
                 scale: 0,
                 x: 0,
-                y: -100,
+                y: -150,
                 opacity: 0,
+                rotate: 0,
               }}
               animate={{ 
                 scale: 1,
                 x: x,
                 y: y,
                 opacity: 1,
+                rotate: 360,
               }}
               transition={{ 
                 type: "spring",
-                stiffness: 200,
-                damping: 15,
-                delay: 0.3 + index * 0.05
+                stiffness: 150,
+                damping: 12,
+                delay: 0.4 + index * 0.08
               }}
             >
               <ToppingDot 
@@ -262,27 +264,27 @@ export default function PizzaPreview({ size, sauce, cheese, toppings }: PizzaPre
             </motion.div>
           );
         })}
-        
-        {/* Topping counter badge */}
-        {toppings.length > 0 && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="absolute -top-3 -right-3 bg-primary text-primary-foreground rounded-full w-12 h-12 flex items-center justify-center font-bold shadow-lg border-4 border-background"
-          >
-            <motion.span
-              key={toppings.length}
-              initial={{ scale: 1.5 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 500, damping: 15 }}
-            >
-              {toppings.length}
-            </motion.span>
-          </motion.div>
-        )}
       </motion.div>
+      
+      {/* Topping count text */}
+      {toppings.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.4 }}
+          className="mt-6 text-center"
+        >
+          <motion.p
+            key={toppings.length}
+            initial={{ scale: 1.2 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 15 }}
+            className="text-lg font-semibold text-foreground"
+          >
+            {toppings.length} {toppings.length === 1 ? 'topping' : 'toppings'} added
+          </motion.p>
+        </motion.div>
+      )}
     </div>
   );
 }
