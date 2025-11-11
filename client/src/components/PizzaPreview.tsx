@@ -121,29 +121,29 @@ export default function PizzaPreview({ size, crust, sauce, cheese, toppings }: P
 
   const getCrustStyle = () => {
     const baseStyle = {
-      background: 'radial-gradient(circle at 35% 35%, #D4A574, #C19A6B 40%, #B8860B 70%, #8B6914)',
-      boxShadow: 'inset 0 -8px 30px rgba(0, 0, 0, 0.3), inset 0 8px 20px rgba(255, 255, 255, 0.1), 0 15px 40px rgba(0, 0, 0, 0.4)',
+      background: 'radial-gradient(circle at 40% 35%, #E8C7A0, #D4A574 30%, #C19A6B 55%, #A8875A 80%, #8B7043)',
+      boxShadow: 'inset 0 -4px 15px rgba(0, 0, 0, 0.15), inset 0 4px 10px rgba(255, 255, 255, 0.08), 0 8px 25px rgba(0, 0, 0, 0.25)',
     };
 
     if (crust === 'stuffed') {
       return {
         ...baseStyle,
-        background: 'radial-gradient(circle at 35% 35%, #E8C29A, #D4A574 35%, #C19A6B 50%, #B8860B 75%, #8B6914)',
-        boxShadow: 'inset 0 -8px 30px rgba(0, 0, 0, 0.3), inset 0 8px 20px rgba(255, 255, 255, 0.1), 0 0 0 4px rgba(255, 220, 150, 0.4), 0 15px 40px rgba(0, 0, 0, 0.4)',
+        background: 'radial-gradient(circle at 40% 35%, #F0D4B0, #E8C29A 25%, #D4A574 45%, #C19A6B 65%, #9D7D56)',
+        boxShadow: 'inset 0 -4px 15px rgba(0, 0, 0, 0.15), inset 0 4px 10px rgba(255, 255, 255, 0.08), 0 0 0 3px rgba(255, 230, 180, 0.3), 0 8px 25px rgba(0, 0, 0, 0.25)',
       };
     }
 
     if (crust === 'thin') {
       return {
         ...baseStyle,
-        background: 'radial-gradient(circle at 35% 35%, #C8A882, #B8996B 45%, #A88654 75%, #8B6914)',
+        background: 'radial-gradient(circle at 40% 35%, #D4B090, #C8A882 35%, #B8996B 60%, #9D7D56)',
       };
     }
 
     if (crust === 'thick') {
       return {
         ...baseStyle,
-        background: 'radial-gradient(circle at 35% 35%, #E0C8A0, #D4A574 30%, #C19A6B 55%, #B8860B 80%, #8B6914)',
+        background: 'radial-gradient(circle at 40% 35%, #F0D8B8, #E0C8A0 25%, #D4A574 50%, #C19A6B 70%, #A8875A)',
       };
     }
 
@@ -157,12 +157,12 @@ export default function PizzaPreview({ size, crust, sauce, cheese, toppings }: P
     return toppings.map((toppingId, index) => {
       const seed = toppingId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) + index;
       const angle = seededRandom(seed * 3) * Math.PI * 2;
-      // Keep toppings within 55% of pizza radius (within cheese/sauce area)
-      const radiusRatio = 0.05 + seededRandom(seed * 7) * 0.25;
+      // Spread toppings across pizza surface (15-50% of radius for better visibility)
+      const radiusRatio = 0.15 + seededRandom(seed * 7) * 0.35;
       const radius = pizzaSize * radiusRatio;
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
-      const sizeVar = 20 + seededRandom(seed * 5) * 16;
+      const sizeVar = 18 + seededRandom(seed * 5) * 14;
       const rotation = seededRandom(seed * 11) * 360;
       
       return { x, y, sizeVar, rotation };
@@ -194,9 +194,9 @@ export default function PizzaPreview({ size, crust, sauce, cheese, toppings }: P
       >
         {/* Crust texture */}
         <div 
-          className="absolute inset-0 rounded-full opacity-30"
+          className="absolute inset-0 rounded-full opacity-20"
           style={{
-            background: 'radial-gradient(circle at 60% 40%, transparent 30%, rgba(139, 105, 20, 0.3) 60%)',
+            background: 'radial-gradient(circle at 60% 40%, transparent 30%, rgba(120, 90, 40, 0.25) 70%)',
           }}
         />
         
@@ -208,8 +208,8 @@ export default function PizzaPreview({ size, crust, sauce, cheese, toppings }: P
           style={{
             width: `${crustThickness * 100}%`,
             height: `${crustThickness * 100}%`,
-            background: 'radial-gradient(circle at 40% 40%, #E8C29A, #D4A574)',
-            boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 0.2)',
+            background: 'radial-gradient(circle at 45% 40%, #F0D4B0, #E8C29A 40%, #D4A574 75%)',
+            boxShadow: 'inset 0 1px 4px rgba(0, 0, 0, 0.12)',
           }}
           transition={{ 
             type: "spring", 
@@ -243,13 +243,13 @@ export default function PizzaPreview({ size, crust, sauce, cheese, toppings }: P
                 className="absolute inset-0 rounded-full"
                 style={{
                   background: sauce === 'marinara' 
-                    ? 'radial-gradient(circle at 40% 40%, #DC3545, #C92A2A 60%, #A61E1E)'
+                    ? 'radial-gradient(circle at 45% 40%, #E74C3C, #DC3545 50%, #C92A2A 80%)'
                     : sauce === 'bbq' 
-                    ? 'radial-gradient(circle at 40% 40%, #8B4513, #654321 60%, #4A3621)'
+                    ? 'radial-gradient(circle at 45% 40%, #A0522D, #8B4513 50%, #654321 80%)'
                     : sauce === 'white' 
-                    ? 'radial-gradient(circle at 40% 40%, #F5F5DC, #E8E8D0 60%, #D3D3C0)'
-                    : 'radial-gradient(circle at 40% 40%, #4A7C59, #2F5233 60%, #1F3322)',
-                  boxShadow: 'inset 0 2px 12px rgba(0, 0, 0, 0.3)',
+                    ? 'radial-gradient(circle at 45% 40%, #FAFAEC, #F5F5DC 50%, #E8E8D0 80%)'
+                    : 'radial-gradient(circle at 45% 40%, #5A9370, #4A7C59 50%, #2F5233 80%)',
+                  boxShadow: 'inset 0 1px 6px rgba(0, 0, 0, 0.18)',
                 }}
                 transition={{ 
                   duration: 0.8, 
@@ -284,14 +284,14 @@ export default function PizzaPreview({ size, crust, sauce, cheese, toppings }: P
               initial={{ scale: 0, opacity: 0 }}
               animate={{ 
                 scale: cheese === 'light' ? 0.60 : cheese === 'extra' ? 0.72 : 0.68,
-                opacity: cheese === 'light' ? 0.7 : 0.95
+                opacity: cheese === 'light' ? 0.75 : 0.92
               }}
               className="absolute inset-0 rounded-full m-auto"
               style={{
                 width: cheese === 'light' ? '60%' : cheese === 'extra' ? '72%' : '68%',
                 height: cheese === 'light' ? '60%' : cheese === 'extra' ? '72%' : '68%',
-                background: 'radial-gradient(circle at 45% 35%, #FFF8DC, #FFE4B5 50%, #F0D58C 80%)',
-                boxShadow: 'inset 0 2px 8px rgba(255, 200, 100, 0.5), inset 0 -2px 8px rgba(139, 105, 20, 0.2)',
+                background: 'radial-gradient(circle at 50% 40%, #FFFAEC, #FFF8DC 40%, #FFE4B5 70%, #F0D58C 90%)',
+                boxShadow: 'inset 0 1px 4px rgba(255, 220, 120, 0.35), inset 0 -1px 4px rgba(139, 105, 20, 0.15)',
               }}
               transition={{ 
                 type: "spring", 
