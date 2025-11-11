@@ -154,19 +154,52 @@ export default function PizzaPreview({ size, crust, sauce, cheese, toppings }: P
   const crustThickness = getCrustThickness();
 
   const toppingPositions = useMemo(() => {
-    return toppings.map((toppingId, index) => {
-      const seed = toppingId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) + index;
-      const angle = seededRandom(seed * 3) * Math.PI * 2;
-      // Spread toppings across pizza surface (15-50% of radius for better visibility)
-      const radiusRatio = 0.15 + seededRandom(seed * 7) * 0.35;
-      const radius = pizzaSize * radiusRatio;
-      const x = Math.cos(angle) * radius;
-      const y = Math.sin(angle) * radius;
+    const positions: Array<{ x: number; y: number; sizeVar: number; rotation: number }> = [];
+    const maxRadius = pizzaSize * 0.28; // Keep within 28% of pizza size (well inside cheese layer)
+    const minSpacing = 25; // Minimum distance between topping centers
+    
+    for (let i = 0; i < toppings.length; i++) {
+      const toppingId = toppings[i];
+      const seed = toppingId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) + i;
       const sizeVar = 18 + seededRandom(seed * 5) * 14;
-      const rotation = seededRandom(seed * 11) * 360;
+      let attempts = 0;
+      let position = { x: 0, y: 0, sizeVar, rotation: 0 };
       
-      return { x, y, sizeVar, rotation };
-    });
+      // Try to find a non-overlapping position
+      while (attempts < 50) {
+        const angle = seededRandom(seed * 3 + attempts * 7) * Math.PI * 2;
+        const radiusRatio = seededRandom(seed * 7 + attempts * 11) * 0.85; // 0-85% of max radius
+        const radius = maxRadius * radiusRatio;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        
+        // Check for collisions with existing toppings
+        let hasCollision = false;
+        for (const existingPos of positions) {
+          const distance = Math.sqrt(Math.pow(x - existingPos.x, 2) + Math.pow(y - existingPos.y, 2));
+          if (distance < minSpacing) {
+            hasCollision = true;
+            break;
+          }
+        }
+        
+        if (!hasCollision) {
+          position = {
+            x,
+            y,
+            sizeVar,
+            rotation: seededRandom(seed * 11) * 360
+          };
+          break;
+        }
+        
+        attempts++;
+      }
+      
+      positions.push(position);
+    }
+    
+    return positions;
   }, [toppings, pizzaSize]);
 
   return (
